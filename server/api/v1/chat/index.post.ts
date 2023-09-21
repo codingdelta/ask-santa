@@ -22,6 +22,8 @@ export default defineEventHandler(async (event) => {
     completion.choices[0].message.function_call.arguments
   );
 
+  //TODO: sort on best sellers when we have access to the Amazon API
+
   return {
     ...functioncall,
     items: [

@@ -111,9 +111,70 @@
             Continue
           </button>
         </div>
-        <div v-if="page === 'chat'" class="">
-          <div class=""></div>
-          <div>message venster</div>
+        <div v-if="page === 'chat'" class="flex h-full flex-col py-2">
+          <div
+            id="chat"
+            ref="chatContainer"
+            class="flex-grow justify-end px-4 overflow-y-auto py-4"
+          >
+            <div class="flex flex-col gap-5">
+              <div
+                v-for="(message, index) in messages"
+                :key="index"
+                class="max-w-prose rounded-lg py-3 px-3"
+                :class="
+                  message.role === 'assistant'
+                    ? ' bg-orange-100 justify-start mr-auto'
+                    : 'flex justify-end bg-slate-100 ml-auto'
+                "
+              >
+                <div
+                  v-if="message.role === 'assistant'"
+                  v-html="marked(message.content)"
+                  class="prose"
+                ></div>
+                <div v-else>
+                  {{ message.content }}
+                </div>
+              </div>
+              <div
+                v-if="loading"
+                class="max-w-prose rounded-lg py-3 px-3 bg-orange-100 flex justify-start mr-auto"
+              >
+                <div class="flex space-x-2">
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                </div>
+              </div>
+              <div
+                v-if="error"
+                class="max-w-prose rounded-lg py-3 px-3 bg-orange-100 flex justify-start mr-auto"
+              >
+                Something went wrong, please try again later.
+              </div>
+            </div>
+          </div>
+          <div
+            id="chat-input"
+            class="sticky bottom-0 mt-3 py-1 pr-4 mx-4 flex border rounded-md border-gray-300"
+          >
+            <textarea
+              type="text"
+              class="w-full rounded-md px-4 resize-none border-0 focus:ring-0 focus-visible:ring-0 focus:outline-none max-h-32 placeholder:text-lg"
+              v-model="message"
+              placeholder="Describe the person you want to give a gift to"
+              rows="1"
+              maxlength=""
+              @keydown.enter="sendMessage"
+            ></textarea>
+            <div
+              @click="sendMessage"
+              class="self-center h-10 bg-sky-400 p-2 rounded-xl cursor-pointer"
+            >
+              <PaperAirplaneIcon class="h-6 w-6 text-white" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -122,8 +183,43 @@
 
 <script setup>
 import Snowflakes from "magic-snowflakes";
+import { PaperAirplaneIcon } from "@heroicons/vue/24/outline";
 
 const page = ref("intro");
+const chatContainer = ref(null);
+const loading = ref(false);
+const error = ref(false);
+const message = ref("");
+const messages = ref([]);
+
+async function sendMessage() {
+  if (!message.value) return;
+  loading.value = true;
+  error.value = false;
+  messages.value.push({
+    role: "user",
+    content: message.value,
+  });
+  message.value = "";
+  scrollToBottom();
+
+  try {
+    message.value = "";
+
+    let newMessage = ref({
+      role: "assistant",
+      content: "",
+    });
+
+    messages.value.push(newMessage.value);
+  } catch (err) {
+    error.value = true;
+  }
+
+  loading.value = false;
+  scrollToBottom();
+  message.value = "";
+}
 
 onMounted(() => {
   const snowflakes = new Snowflakes({
