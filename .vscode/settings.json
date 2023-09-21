@@ -34,7 +34,7 @@
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
-  "editor.formatOnType": true,
+  "editor.formatOnType": false,
   "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
   "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
   // other

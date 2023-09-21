@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
-    azureApiEndpiont: process.env.AZURE_API_ENDPOINT,
+    azureApiEndpoint: process.env.AZURE_API_ENDPOINT,
+    azureApiVersion: process.env.AZURE_API_VERSION,
     azureApiKey: process.env.AZURE_API_KEY,
   },
   postcss: {
