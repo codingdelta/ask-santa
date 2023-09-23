@@ -1,9 +1,7 @@
 <template>
-  <div id="container" class="w-full min-h-screen bg-sky-200 text-3xl py-5">
+  <div id="container" class="w-full min-h-screen bg-sky-200 py-5">
     <div class="flex flex-col items-center">
       <svg
-        width="1181"
-        height="288"
         viewBox="0 0 1181 288"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -86,14 +84,14 @@
         />
       </svg>
 
-      <div class="text-center">
+      <div class="text-center text-3xl">
         But still wondering what the perfect gift is? Santa will help!
       </div>
     </div>
     <div class="flex justify-center mt-4">
       <div
         id="chat"
-        class="bg-white rounded-lg h-96 w-1/2 text-center flex justify-center"
+        class="bg-white rounded-lg h-[600px] w-full md:w-2/3 text-center flex justify-center"
       >
         <div
           v-if="page === 'intro'"
@@ -115,53 +113,68 @@
           <div
             id="chat"
             ref="chatContainer"
-            class="flex-grow justify-end px-4 overflow-y-auto py-4"
+            class="flex-grow justify-end overflow-y-auto px-2 py-4"
           >
-            <div class="flex flex-col gap-5">
+            <div class="flex flex-col gap-3">
               <div
                 v-for="(message, index) in messages"
                 :key="index"
-                class="max-w-prose rounded-lg py-3 px-3"
+                class="w-full rounded-lg py-3 px-3 text-left"
                 :class="
                   message.role === 'assistant'
-                    ? ' bg-orange-100 justify-start mr-auto'
+                    ? ' bg-sky-100 justify-start mr-auto'
                     : 'flex justify-end bg-slate-100 ml-auto'
                 "
               >
                 <div
                   v-if="message.role === 'assistant'"
                   v-html="marked(message.content)"
-                  class="prose"
+                  class=""
                 ></div>
                 <div v-else>
                   {{ message.content }}
                 </div>
-              </div>
-              <div
-                v-if="loading"
-                class="max-w-prose rounded-lg py-3 px-3 bg-orange-100 flex justify-start mr-auto"
-              >
-                <div class="flex space-x-2">
-                  <div class="dot"></div>
-                  <div class="dot"></div>
-                  <div class="dot"></div>
+                <div
+                  v-if="message.products && message.products.length > 0"
+                  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-5"
+                >
+                  <div
+                    v-for="(product, index) in message.products"
+                    :key="index"
+                    class="bg-white p-2 rounded-lg"
+                  >
+                    <div class="flex flex-col justify-between gap-y-2 h-full">
+                      <div>
+                        <div class="flex justify-center">
+                          <img
+                            :src="product.image"
+                            class="h-48 w-48 object-contain"
+                          />
+                        </div>
+                        <div class="flex flex-col justify-between">
+                          <div class="text-center font-semibold text-lg">
+                            {{ product.name }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <NuxtLink
+                        class="rounded-md cursor-pointer bg-sky-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+                        >Shop on Amazon</NuxtLink
+                      >
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div
-                v-if="error"
-                class="max-w-prose rounded-lg py-3 px-3 bg-orange-100 flex justify-start mr-auto"
-              >
-                Something went wrong, please try again later.
               </div>
             </div>
           </div>
           <div
             id="chat-input"
-            class="sticky bottom-0 mt-3 py-1 pr-4 mx-4 flex border rounded-md border-gray-300"
+            class="sticky bottom-0 mt-3 py-1 pr-4 flex border rounded-md border-gray-300"
           >
             <textarea
               type="text"
-              class="w-full rounded-md px-4 resize-none border-0 focus:ring-0 focus-visible:ring-0 focus:outline-none max-h-32 placeholder:text-lg"
+              class="w-full placeholder:text-base rounded-md px-4 resize-none border-0 focus:ring-0 focus-visible:ring-0 focus:outline-none max-h-32"
               v-model="message"
               placeholder="Describe the person you want to give a gift to"
               rows="1"
@@ -184,13 +197,22 @@
 <script setup>
 import Snowflakes from "magic-snowflakes";
 import { PaperAirplaneIcon } from "@heroicons/vue/24/outline";
+import { marked } from "marked";
 
 const page = ref("intro");
 const chatContainer = ref(null);
 const loading = ref(false);
 const error = ref(false);
-const message = ref("");
+const message = ref(
+  "My dad loves the ocean and do some hikes. He is 56 years old. He used to go a lot to the Alps and the Himilaya. But now is sitting a lot at home. I would love to get him moving again."
+);
 const messages = ref([]);
+
+messages.value.push({
+  role: "assistant",
+  content:
+    "Hi, I'm Santa's assistant. Describe the person you want to give a gift to and I'll help you find the perfect present.",
+});
 
 async function sendMessage() {
   if (!message.value) return;
@@ -204,13 +226,19 @@ async function sendMessage() {
   scrollToBottom();
 
   try {
+    let res = await $fetch(`/api/v1/chat`, {
+      method: "POST",
+      body: JSON.stringify({
+        messages: messages.value,
+      }),
+    });
     message.value = "";
 
     let newMessage = ref({
       role: "assistant",
-      content: "",
+      content: res.explanation,
+      products: res.products,
     });
-
     messages.value.push(newMessage.value);
   } catch (err) {
     error.value = true;
@@ -228,6 +256,14 @@ onMounted(() => {
     zIndex: -1,
   });
 });
+
+function scrollToBottom() {
+  nextTick(() => {
+    if (chatContainer.value) {
+      chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+    }
+  });
+}
 </script>
 
 <style scoped></style>

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     ...functioncall,
-    items: [
+    products: [
       {
         name: "Merrell Men's Moab 3 Hiking Shoe",
         image:
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
         currency: "dollar",
       },
       {
-        name: "Contigo Cortland Chill 2.0 Stainless Steel Vacuum-Insulated Water Bottle with Spill-Proof Lid, Keeps Drinks Hot or Cold for Hours with Interchangeable Lid, 24oz 2-Pack, Juniper & Dragonfruit ",
+        name: "Contigo Cortland Chill 2.0 Stainless Steel Vacuum-Insulated Water Bottle",
         image:
           "https://m.media-amazon.com/images/I/61FrZSBHwNL._AC_UL640_FMwebp_QL65_.jpg",
         url: "https://www.amazon.com/Contigo-Vacuum-Insulated-Spill-Proof-Interchangeable-Dragonfruit/dp/B09N7Z26F5/ref=sr_1_4?crid=3LK91XC6W8ZKU&keywords=bottle&qid=1695302190&sprefix=bott%2Caps%2C389&sr=8-4",

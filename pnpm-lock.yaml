@@ -11,6 +11,9 @@ dependencies:
   ai:
     specifier: ^2.2.13
     version: 2.2.13(react@18.2.0)(solid-js@1.7.12)(svelte@4.2.1)(vue@3.3.4)
+  marked:
+    specifier: ^9.0.3
+    version: 9.0.3
   openai:
     specifier: ^4.8.0
     version: 4.8.0
@@ -4094,6 +4097,12 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /marked@9.0.3:
+    resolution: {integrity: sha512-pI/k4nzBG1PEq1J3XFEHxVvjicfjl8rgaMaqclouGSMPhk7Q3Ejb2ZRxx/ZQOcQ1909HzVoWCFYq6oLgtL4BpQ==}
+    engines: {node: '>= 16'}
+    hasBin: true
+    dev: false
 
   /md5@2.3.0:
     resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
