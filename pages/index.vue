@@ -6,7 +6,8 @@
       </div>
 
       <div class="text-3xl">
-        But still wondering what the perfect gift is? Santa will help!
+        But still wondering what the perfect gift is? Santa's assistant will
+        help!
       </div>
     </div>
     <div class="flex justify-center mt-4">
