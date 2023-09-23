@@ -119,7 +119,7 @@
               <div
                 v-for="(message, index) in messages"
                 :key="index"
-                class="w-full rounded-lg py-3 px-3 text-left"
+                class="max-w-prose rounded-lg py-3 px-3 text-left"
                 :class="
                   message.role === 'assistant'
                     ? ' bg-sky-100 justify-start mr-auto'
@@ -129,7 +129,7 @@
                 <div
                   v-if="message.role === 'assistant'"
                   v-html="marked(message.content)"
-                  class=""
+                  class="prose"
                 ></div>
                 <div v-else>
                   {{ message.content }}
@@ -177,7 +177,7 @@
               class="w-full placeholder:text-base rounded-md px-4 resize-none border-0 focus:ring-0 focus-visible:ring-0 focus:outline-none max-h-32"
               v-model="message"
               placeholder="Describe the person you want to give a gift to"
-              rows="1"
+              rows="2"
               maxlength=""
               @keydown.enter="sendMessage"
             ></textarea>
