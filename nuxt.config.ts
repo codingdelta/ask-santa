@@ -12,5 +12,6 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  modules: ["@nuxt/content"],
   css: ["~/assets/css/main.css"],
 });
